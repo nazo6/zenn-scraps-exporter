@@ -137,7 +137,7 @@ fn generate_markdown(comments: &[ScrapComment]) -> String {
         .max()
         .expect("コメントがありません。");
     format!(
-        "----\ncreated: {}\nupdated: {}\n----\n\n{}",
+        "---\ncreated: {}\nupdated: {}\n---\n\n{}",
         created_date,
         updated_date,
         generate_markdown_content(comments, 0)
@@ -148,27 +148,46 @@ fn generate_markdown_content(comments: &[ScrapComment], depth: usize) -> String 
     let mut result = String::new();
     for comment in comments {
         result.push_str(&format!(
-            "{} {} by {}:\n\n{}\n\n",
-            "#".repeat(depth + 1),
-            comment.created_at,
-            comment.author,
+            "\n{}\n",
             comment
                 .body_markdown
                 .split('\n')
-                .map(|x| {
+                .enumerate()
+                .map(|(i, x)| {
                     let re = regex::Regex::new(r"(#+) (.*)").unwrap();
                     if let Some(cap) = re.captures(x) {
                         if let Some(headline) = cap.get(1) {
                             if let Some(content) = cap.get(2) {
-                                return format!(
-                                    "{} {}",
-                                    "#".repeat(headline.as_str().len() + depth + 1),
-                                    content.as_str()
-                                );
+                                if i == 0 {
+                                    return format!(
+                                        "{} {} ({} by {})",
+                                        "#".repeat(headline.as_str().len() + depth),
+                                        content.as_str(),
+                                        comment.created_at,
+                                        comment.author,
+                                    );
+                                } else {
+                                    return format!(
+                                        "{} {}",
+                                        "#".repeat(headline.as_str().len() + depth + 1),
+                                        content.as_str(),
+                                    );
+                                }
                             }
                         }
                     };
-                    x.to_string()
+
+                    if i == 0 {
+                        format!(
+                            "{} ({} by {})\n{}",
+                            "#".repeat(depth + 1),
+                            comment.created_at,
+                            comment.author,
+                            x
+                        )
+                    } else {
+                        x.to_string()
+                    }
                 })
                 .collect::<Vec<String>>()
                 .join("\n")
