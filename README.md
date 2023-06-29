@@ -7,3 +7,5 @@ Zennのスクラップの「JSONで内容を出力」を全てのスクラップ
 ```bash
 cargo run
 ```
+
+実行するとスクラップのJSONとそれを元にいい感じのmarkdownを出力します。
