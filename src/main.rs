@@ -160,11 +160,10 @@ fn generate_markdown_content(comments: &[ScrapComment], depth: usize) -> String 
                             if let Some(content) = cap.get(2) {
                                 if i == 0 {
                                     return format!(
-                                        "{} {} ({} by {})",
+                                        "{} {} ({})",
                                         "#".repeat(headline.as_str().len() + depth),
                                         content.as_str(),
                                         comment.created_at,
-                                        comment.author,
                                     );
                                 } else {
                                     return format!(
@@ -178,13 +177,7 @@ fn generate_markdown_content(comments: &[ScrapComment], depth: usize) -> String 
                     };
 
                     if i == 0 {
-                        format!(
-                            "{} ({} by {})\n{}",
-                            "#".repeat(depth + 1),
-                            comment.created_at,
-                            comment.author,
-                            x
-                        )
+                        format!("{} ({})\n{}", "#".repeat(depth + 1), comment.created_at, x)
                     } else {
                         x.to_string()
                     }
