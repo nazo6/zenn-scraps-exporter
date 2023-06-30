@@ -51,7 +51,7 @@ fn main() {
         let markdown = generate_markdown(&scrap.comments);
         let mut file = std::fs::File::create(format!(
             "markdown/{}.md",
-            sanitize_filename::sanitize(&scrap.title)
+            sanitize_filename::sanitize(scrap.title.replace('/', "・"))
         ))
         .expect("markdownファイルを作成できませんでした。");
         file.write_all(markdown.as_bytes())
